@@ -9,6 +9,7 @@ namespace ConsoleAppFramework
     {
         CommandDescriptor? rootCommandDescriptor;
         readonly Dictionary<string, CommandDescriptor> descriptors = new Dictionary<string, CommandDescriptor>(StringComparer.OrdinalIgnoreCase);
+        readonly Dictionary<string, CommandDescriptor> commandRootDescriptors = new Dictionary<string, CommandDescriptor>(StringComparer.OrdinalIgnoreCase);
         readonly Dictionary<string, Dictionary<string, CommandDescriptor>> subCommandDescriptors = new Dictionary<string, Dictionary<string, CommandDescriptor>>(StringComparer.OrdinalIgnoreCase);
         readonly ConsoleAppOptions options;
 
@@ -25,6 +26,14 @@ namespace ConsoleAppFramework
                 {
                     throw new InvalidOperationException($"Duplicate command name is added. Name:{name} Method:{commandDescriptor.MethodInfo.DeclaringType?.Name}.{commandDescriptor.MethodInfo.Name}");
                 }
+            }
+        }
+
+        public void AddCommand(string parentCommand, CommandDescriptor commandDescriptor)
+        {
+            if (!commandRootDescriptors.TryAdd(parentCommand, commandDescriptor))
+            {
+                throw new InvalidOperationException($"Duplicate command name is added. Name:{parentCommand} Method:{commandDescriptor.MethodInfo.DeclaringType?.Name}.{commandDescriptor.MethodInfo.Name}");
             }
         }
 
@@ -80,10 +89,11 @@ namespace ConsoleAppFramework
                 }
             }
 
-            // 2. Try to match command
+            // 2. Try to match command or command root
             if (args.Length >= 1)
             {
-                if (descriptors.TryGetValue(args[0], out descriptor))
+                if (descriptors.TryGetValue(args[0], out descriptor)
+                    || commandRootDescriptors.TryGetValue(args[0], out descriptor))
                 {
                     offset = 1;
                     return true;

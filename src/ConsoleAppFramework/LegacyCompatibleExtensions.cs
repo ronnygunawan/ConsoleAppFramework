@@ -41,6 +41,23 @@ namespace ConsoleAppFramework
                 .RunAsync();
         }
 
+        /// <summary>
+        /// Run a single ConsoleApp type that is targeted by type argument.
+        /// </summary>
+        public static Task RunConsoleAppFrameworkSubCommandsAsync<T1, T2>(this IHostBuilder hostBuilder, string[] args, ConsoleAppOptions? options = null)
+            where T1 : ConsoleAppBase
+            where T2 : ConsoleAppBase
+        {
+            options = ConfigureLegacyCompatible(options);
+            args = ConfigureLegacyCompatibleArgs(args);
+
+            return new ConsoleAppBuilder(args, hostBuilder, options)
+                .Build()
+                .AddSubCommands<T1>()
+                .AddSubCommands<T2>()
+                .RunAsync();
+        }
+
         static ConsoleAppOptions ConfigureLegacyCompatible(ConsoleAppOptions? options)
         {
             if (options == null)

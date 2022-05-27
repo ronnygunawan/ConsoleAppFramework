@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -21,7 +22,7 @@ namespace ConsoleAppFramework.Tests
         {
             public void Main(double d)
             {
-                Context.Logger.LogInformation($"d:{d}");
+                Context.Logger.LogInformation($"d:{d.ToString(CultureInfo.InvariantCulture)}");
             }
 
             [Command("run")]
@@ -183,6 +184,76 @@ namespace ConsoleAppFramework.Tests
                     .ConfigureTestLogging(testOutput, log, true)
                     .RunConsoleAppFrameworkAsync<OverrideDefaultCommand>(args);
                 log.InfoLogShouldBe(0, "hlp");
+            }
+        }
+
+
+        [Command("foo")]
+        public class SubCommandsWithRootCommand1 : ConsoleAppBase
+        {
+            [CommandRoot]
+            public void Foo()
+            {
+                Context.Logger.LogInformation("foo");
+            }
+
+            [Command("bar")]
+            public void FooBar()
+            {
+                Context.Logger.LogInformation("foo bar");
+            }
+        }
+
+        [Command("asd")]
+        public class SubCommandsWithRootCommand2 : ConsoleAppBase
+        {
+            [CommandRoot]
+            public void Asd()
+            {
+                Context.Logger.LogInformation("asd");
+            }
+
+            [Command("fgh")]
+            public void AsdFgh()
+            {
+                Context.Logger.LogInformation("asd fgh");
+            }
+        }
+
+        [Fact]
+        public async Task SubCommandsWithRootCommandTest()
+        {
+            {
+                var args = "foo".Split(' ');
+                var log = new LogStack();
+                await new HostBuilder()
+                    .ConfigureTestLogging(testOutput, log, true)
+                    .RunConsoleAppFrameworkSubCommandsAsync<SubCommandsWithRootCommand1, SubCommandsWithRootCommand2>(args);
+                log.InfoLogShouldBe(0, "foo");
+            }
+            {
+                var args = "foo bar".Split(' ');
+                var log = new LogStack();
+                await new HostBuilder()
+                    .ConfigureTestLogging(testOutput, log, true)
+                    .RunConsoleAppFrameworkSubCommandsAsync<SubCommandsWithRootCommand1, SubCommandsWithRootCommand2>(args);
+                log.InfoLogShouldBe(0, "foo bar");
+            }
+            {
+                var args = "asd".Split(' ');
+                var log = new LogStack();
+                await new HostBuilder()
+                    .ConfigureTestLogging(testOutput, log, true)
+                    .RunConsoleAppFrameworkSubCommandsAsync<SubCommandsWithRootCommand1, SubCommandsWithRootCommand2>(args);
+                log.InfoLogShouldBe(0, "asd");
+            }
+            {
+                var args = "foo bar".Split(' ');
+                var log = new LogStack();
+                await new HostBuilder()
+                    .ConfigureTestLogging(testOutput, log, true)
+                    .RunConsoleAppFrameworkSubCommandsAsync<SubCommandsWithRootCommand1, SubCommandsWithRootCommand2>(args);
+                log.InfoLogShouldBe(0, "foo bar");
             }
         }
 

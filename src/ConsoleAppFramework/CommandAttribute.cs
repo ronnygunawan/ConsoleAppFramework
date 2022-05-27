@@ -34,4 +34,20 @@ namespace ConsoleAppFramework
     public class RootCommandAttribute : Attribute
     {
     }
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+    public class CommandRootAttribute : Attribute
+    {
+        public string? Description { get; }
+
+        public CommandRootAttribute()
+            : this(null)
+        {
+        }
+
+        public CommandRootAttribute(string? description)
+        {
+            Description = description;
+        }
+    }
 }
