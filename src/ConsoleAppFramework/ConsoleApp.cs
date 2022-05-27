@@ -173,8 +173,13 @@ namespace ConsoleAppFramework
 
                 if (method.GetCustomAttribute<RootCommandAttribute>() != null)
                 {
-                    var command = new CommandDescriptor(CommandType.DefaultCommand, method);
+                    var command = new CommandDescriptor(CommandType.DefaultCommand, method, parentCommand: rootName);
                     commands.AddRootCommand(command);
+                }
+                else if (method.GetCustomAttribute<CommandRootAttribute>() != null)
+                {
+                    var command = new CommandDescriptor(CommandType.Command, method, parentCommand: rootName);
+                    commands.AddCommand(rootName, command);
                 }
                 else
                 {

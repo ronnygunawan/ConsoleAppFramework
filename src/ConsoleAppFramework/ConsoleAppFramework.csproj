@@ -1,19 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
-		<LangVersion>8.0</LangVersion>
+		<TargetFrameworks>net6.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>release.snk</AssemblyOriginatorKeyFile>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 
 		<!-- NuGet -->
-		<PackageId>ConsoleAppFramework</PackageId>
+		<PackageId>RG.ConsoleAppFramework</PackageId>
 		<Description>Micro-framework for console applications.</Description>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<NoWarn>1701;1702;1591</NoWarn>
+		<Authors>Cysharp, Ronny Gunawan</Authors>
+		<Product>RG.ConsoleAppFramework</Product>
+		<Copyright>© Cysharp, Inc., Ronny Gunawan</Copyright>
+		<PackageProjectUrl>https://github.com/ronnygunawan/ConsoleAppFramework</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/ronnygunawan/ConsoleAppFramework</RepositoryUrl>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
